@@ -1,10 +1,10 @@
 {
-  "name": "fulltask-global-ai-platform",
+  "name": "alltask-ai-platform",
   "version": "1.0.0",
-  "description": "FullTask Global AI Platform by Akin S. Sokpah from Nimba County, Liberia — an all-in-one educational and AI-powered global platform.",
-  "main": "server.js",
+  "description": "FullTask Global AI Platform by Akin S. Sokpah from Nimba County, Liberia.",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node backend/server.js",
     "build": "echo 'No build step required'"
   },
   "author": "Akin S. Sokpah from Nimba County, Liberia",
