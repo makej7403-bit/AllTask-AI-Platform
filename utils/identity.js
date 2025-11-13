@@ -1,6 +1,8 @@
 // utils/identity.js
-export const CREATOR = 'Akin S. Sokpah from Nimba County, Liberia';
+export function getCreatorIdentity() {
+  return "Created by Akin S. Sokpah from Nimba County, Liberia";
+}
 
-export function embedIdentity(text) {
-  return `${text}\n\n— Platform created by ${CREATOR}`;
+export function getPlatformName() {
+  return "FullTask Global AI Platform";
 }
