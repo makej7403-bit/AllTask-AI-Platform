@@ -1,8 +1,7 @@
-// utils/identity.js
-export function getCreatorIdentity() {
-  return "Created by Akin S. Sokpah from Nimba County, Liberia";
-}
-
-export function getPlatformName() {
-  return "FullTask Global AI Platform";
+export function creatorIdentity() {
+  return {
+    name: "Akin S. Sokpah",
+    location: "Nimba County, Liberia",
+    creatorOf: "FullTask Global AI Platform"
+  };
 }
