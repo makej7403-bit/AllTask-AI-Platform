@@ -16,6 +16,6 @@ export async function POST(req) {
     return new Response(JSON.stringify({ status: 'ok', id, enabled: !!enable }), { status: 200 });
   } catch (err) {
     console.error(err);
-    return new Response(JSON.stringify({ error: 'Failed to toggle', details: String(err) }), { status: 500 });
+    return new Response(JSON.stringify({ error: String(err) }), { status: 500 });
   }
 }
