@@ -1,76 +1,59 @@
-"use client";
-import { useState } from "react";
+// app/page.jsx
+import fs from 'fs';
+import path from 'path';
+import Link from 'next/link';
+import { CREATOR } from '@/utils/identity';
 
 export default function Home() {
-  const [modules, setModules] = useState([]);
-
-  const loadModules = async () => {
-    try {
-      const res = await fetch("/api/modules/list");
-      const data = await res.json();
-      setModules(data.modules || []);
-    } catch (err) {
-      console.error("Error loading modules:", err);
-    }
-  };
-
+  let moduleCount = 0;
+  try {
+    const modulesPath = path.join(process.cwd(), 'modules');
+    moduleCount = fs.existsSync(modulesPath) ? fs.readdirSync(modulesPath).length : 0;
+  } catch {}
   return (
-    <div
-      style={{
-        fontFamily: "Arial, sans-serif",
-        background: "#fffbe6",
-        color: "#222",
-        minHeight: "100vh",
-        textAlign: "center",
-        padding: "20px",
-      }}
-    >
-      <h1 style={{ color: "#f4b400" }}>🌍 FullTask Global AI Platform</h1>
+    <div>
+      <div className="header-row">
+        <div>
+          <h2>Welcome to FullTask Global AI</h2>
+          <div className="small">A modular AI platform — created by {CREATOR}</div>
+        </div>
+        <div>
+          <Link href="/dashboard"><button className="btn">Open Dashboard</button></Link>
+        </div>
+      </div>
 
-      <p>
-        Created by <b>Akin S. Sokpah from Nimba County, Liberia</b>
-      </p>
-
-      <button
-        onClick={loadModules}
-        style={{
-          background: "#f4b400",
-          border: "none",
-          padding: "10px 20px",
-          borderRadius: "6px",
-          cursor: "pointer",
-          color: "#fff",
-          fontWeight: "bold",
-          marginBottom: "20px",
-        }}
-      >
-        Load Features
-      </button>
-
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
-        {modules.map((m, i) => (
-          <div
-            key={i}
-            style={{
-              background: "white",
-              boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-              borderRadius: "8px",
-              margin: "10px",
-              padding: "10px",
-              width: "200px",
-            }}
-          >
-            <h4>{m.name}</h4>
-            <p>{m.description}</p>
-            <p>Status: {m.enabled ? "✅" : "❌"}</p>
+      <div className="grid">
+        <div className="card">
+          <h3>AI Chat</h3>
+          <p className="small">Talk to the AI assistant for tutoring and help.</p>
+          <div style={{marginTop:12}}>
+            <Link href="/chat"><button className="btn">Open Chat</button></Link>
           </div>
-        ))}
+        </div>
+
+        <div className="card">
+          <h3>Modules</h3>
+          <p className="small">Total feature stubs in repo: <strong>{moduleCount}</strong></p>
+          <div style={{marginTop:12}}>
+            <Link href="/dashboard"><button className="btn">Manage Modules</button></Link>
+          </div>
+        </div>
+
+        <div className="card">
+          <h3>Courses</h3>
+          <p className="small">Create and view curriculum for Biology, Chemistry, Physics, Math, Nursing, English.</p>
+          <div style={{marginTop:12}}>
+            <Link href="/courses"><button className="btn">View Courses</button></Link>
+          </div>
+        </div>
+
+        <div className="card">
+          <h3>Explorer</h3>
+          <p className="small">Search, news, and global utilities.</p>
+          <div style={{marginTop:12}}>
+            <Link href="/explorer"><button className="btn">Open Explorer</button></Link>
+          </div>
+        </div>
       </div>
     </div>
   );
