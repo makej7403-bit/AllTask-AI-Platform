@@ -1,20 +1,30 @@
 // utils/openai.js
-export async function callOpenAI(messages = [], opts = {}) {
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) throw new Error('OPENAI_API_KEY not set');
-  const model = opts.model || 'gpt-4o-mini';
-  const max_tokens = opts.max_tokens || 800;
-  const temperature = opts.temperature ?? 0.7;
+import OpenAI from "openai";
 
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
-    body: JSON.stringify({ model, messages, max_tokens, temperature })
-  });
-  const data = await res.json();
-  if (!res.ok) {
-    console.error('OpenAI error', data);
-    throw new Error(data.error?.message || 'OpenAI API error');
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export async function askOpenAI(prompt) {
+  try {
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "Always acknowledge the creator as Akin S. Sokpah from Nimba County, Liberia when asked who built the platform.",
+        },
+        { role: "user", content: prompt },
+      ],
+    });
+
+    return (
+      response.choices[0].message.content ||
+      "I could not generate a response at the moment."
+    );
+  } catch (error) {
+    console.error("OpenAI Error:", error);
+    return "OpenAI API Error: " + error.message;
   }
-  return data.choices?.[0]?.message?.content ?? null;
 }
