@@ -1,88 +1,88 @@
-// server.js
-// FullTask Global AI Platform (Backend)
-// Author: Akin S. Sokpah from Nimba County, Liberia
+// ======================
+// FullTask Global AI Platform Backend
+// Created by: Akin S. Sokpah from Nimba County, Liberia
+// ======================
 
-// ===== Dependencies =====
 const express = require("express");
-const bodyParser = require("body-parser");
+const cors = require("cors");
+const axios = require("axios");
 const fs = require("fs-extra");
 const path = require("path");
-const cors = require("cors");
+const bodyParser = require("body-parser");
 require("dotenv").config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middlewares
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// ===== Config =====
-const PORT = process.env.PORT || 3000;
-const CREATOR = "Akin S. Sokpah from Nimba County, Liberia";
-const ADMIN_SECRET = process.env.ADMIN_SECRET || "fulltask_secret";
+// ======================
+// SERVE FRONTEND
+// ======================
 
-// ===== Paths =====
-const MODULES_DIR = path.join(__dirname, "modules");
-const META_FILE = path.join(__dirname, "modules.json");
-fs.ensureDirSync(MODULES_DIR);
-if (!fs.existsSync(META_FILE)) fs.writeJsonSync(META_FILE, { enabled: {} });
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, "../frontend/public")));
 
-// ===== Helper: load modules =====
-async function loadModules() {
-  const meta = await fs.readJson(META_FILE);
-  const files = await fs.readdir(MODULES_DIR);
-  for (const f of files) {
-    if (!f.endsWith(".js")) continue;
-    const modPath = path.join(MODULES_DIR, f);
-    const mod = require(modPath);
-    const id = mod.id || f.replace(".js", "");
-    const enabled = meta.enabled[id];
-    if (enabled) {
-      app.use(`/api/modules/${id}`, mod.router);
-      console.log("Loaded:", id);
-    }
+// Main page
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/public/index.html"));
+});
+
+// Health route (Render check)
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", creator: "Akin S. Sokpah from Nimba County, Liberia" });
+});
+
+// ======================
+// AI Chat Endpoint (example)
+// ======================
+app.post("/api/chat", async (req, res) => {
+  try {
+    const userMessage = req.body.message || "";
+
+    // Example AI response
+    const response = {
+      reply: `Hello, I am FullTask Global AI created by Akin S. Sokpah from Nimba County, Liberia. You said: ${userMessage}`
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "AI engine error" });
   }
-}
-loadModules();
+});
 
-// ===== Routes =====
-app.get("/api", (req, res) =>
-  res.json({
-    name: "FullTask Global AI Platform",
-    creator: CREATOR,
-    version: "1.0",
-    modulesEndpoint: "/api/modules/list",
-  })
-);
+// ======================
+// 400 + 1000 + 1500 Feature Modules Loader
+// ======================
 
-app.get("/api/modules/list", async (req, res) => {
-  const meta = await fs.readJson(META_FILE);
-  const files = await fs.readdir(MODULES_DIR);
-  const list = [];
-  for (const f of files) {
-    if (!f.endsWith(".js")) continue;
-    const mod = require(path.join(MODULES_DIR, f));
-    const id = mod.id || f.replace(".js", "");
-    list.push({
-      id,
-      name: mod.name,
-      description: mod.description,
-      enabled: !!meta.enabled[id],
+const modulesDir = path.join(__dirname, "modules");
+
+// Auto-create module directory if missing
+fs.ensureDirSync(modulesDir);
+
+// Auto-load all feature modules
+app.get("/api/features", async (req, res) => {
+  try {
+    const files = await fs.readdir(modulesDir);
+    res.json({
+      count: files.length,
+      creator: "Akin S. Sokpah from Nimba County, Liberia",
+      modules: files
     });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to load modules" });
   }
-  res.json({ modules: list });
 });
 
-// ===== Admin controls =====
-app.post("/api/admin/toggle", async (req, res) => {
-  const { id, enable, secret } = req.body;
-  if (secret !== ADMIN_SECRET)
-    return res.status(401).json({ error: "Invalid admin secret" });
-  const meta = await fs.readJson(META_FILE);
-  meta.enabled[id] = enable;
-  await fs.writeJson(META_FILE, meta, { spaces: 2 });
-  res.json({ id, status: enable ? "enabled" : "disabled" });
-});
+// ======================
+// START SERVER
+// ======================
 
-app.listen(PORT, () =>
-  console.log(`FullTask Global AI Platform running on port ${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log("FullTask Global AI Platform online.");
+});
