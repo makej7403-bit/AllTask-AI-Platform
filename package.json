@@ -1,23 +1,21 @@
 {
-  "name": "alltask-ai-platform",
+  "name": "fulltask-global-ai-platform",
   "version": "1.0.0",
-  "description": "FullTask Global AI Platform by Akin S. Sokpah from Nimba County, Liberia.",
-  "main": "backend/server.js",
+  "private": true,
+  "description": "FullTask Global AI Platform — Created by Akin S. Sokpah from Nimba County, Liberia.",
   "scripts": {
-    "start": "node backend/server.js",
-    "build": "echo 'No build step required'"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
-  "author": "Akin S. Sokpah from Nimba County, Liberia",
-  "license": "MIT",
   "dependencies": {
-    "express": "^4.19.2",
-    "cors": "^2.8.5",
-    "axios": "^1.6.7",
-    "dotenv": "^16.4.1",
-    "body-parser": "^1.20.2",
-    "fs-extra": "^11.2.0"
-  },
-  "engines": {
-    "node": ">=18.x"
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "next": "15.0.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "fs-extra": "^11.2.0",
+    "axios": "^1.6.8",
+    "cors": "^2.8.5"
   }
 }
