@@ -1,0 +1,42 @@
+/* app/globals.css - simple clean styling */
+:root{
+  --bg: #fffbe6;
+  --card: #ffffff;
+  --accent: #f2b705;
+  --muted: #666;
+  --glass: rgba(255,255,255,0.85);
+  --radius: 12px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.06);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color-scheme: light;
+}
+
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:#111;
+  -webkit-font-smoothing:antialiased;
+}
+
+.ft-shell{max-width:1200px;margin:28px auto;padding:18px}
+.ft-header{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+.ft-brand{display:flex;gap:12px;align-items:center}
+.ft-logo{width:56px;height:56px;border-radius:10px;object-fit:cover;box-shadow:var(--shadow)}
+.ft-brand h1{margin:0;font-size:20px}
+.ft-sub{font-size:12px;color:var(--muted)}
+
+.ft-nav{display:flex;gap:12px;align-items:center}
+.ft-nav a{padding:8px 12px;border-radius:8px;text-decoration:none;color:#111;font-weight:600}
+.ft-nav a:hover{background:rgba(0,0,0,0.04)}
+
+.ft-main{margin-top:16px;min-height:60vh}
+.ft-footer{margin-top:30px;padding:18px;border-radius:8px;background:var(--glass);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);padding:14px;border-radius:var(--radius);box-shadow:var(--shadow);min-height:120px}
+.btn{background:var(--accent);border:none;color:#111;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer}
+.small{font-size:13px;color:var(--muted)}
+.input{padding:8px;border-radius:8px;border:1px solid #eee;width:100%}
+.header-row{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:12px}
