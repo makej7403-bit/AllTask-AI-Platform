@@ -1,7 +1,5 @@
 // scripts/generate_modules.js
-// Usage (local/CI): node scripts/generate_modules.js <count> <start>
-// Example: node scripts/generate_modules.js 2900 1
-
+// Usage: node scripts/generate_modules.js <count> <start>
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -14,54 +12,29 @@ const metaFile = path.join(process.cwd(), 'modules.json');
 
 fs.ensureDirSync(modulesDir);
 
-function pad(n, w = 4) { return String(n).padStart(w, '0'); }
+function pad(n,w=4){ return String(n).padStart(w,'0'); }
 
-(async () => {
+(async ()=>{
   console.log(`Generating ${total} modules starting at ${start} into ${modulesDir}`);
   let created = 0;
-
-  for (let i = start; i < start + total; i++) {
-    const idx = pad(i);
-    const id = `feat${idx}`;
+  for(let i=start;i<start+total;i++){
+    const id = `feat${pad(i)}`;
     const filePath = path.join(modulesDir, `${id}.js`);
-
-    if (await fs.pathExists(filePath)) {
-      // skip existing for idempotency
-      continue;
-    }
-
-    const content =
-`// ${id}.js
-// Auto-generated FullTask module stub
-module.exports = {
-  id: '${id}',
-  name: 'Feature ${i}',
-  description: 'Auto-generated placeholder for ${id}',
-  creator: 'Akin S. Sokpah from Nimba County, Liberia'
-};
-
-// Example handler for Express or for direct require usage:
-// exports.handler = (req, res) => res.json({ id: '${id}', creator: 'Akin S. Sokpah from Nimba County, Liberia', note: 'Implement feature logic here' });
-`;
-
+    if (await fs.pathExists(filePath)) continue;
+    const content = `// ${id}.js\nmodule.exports = {\n  id: '${id}',\n  name: 'Feature ${i}',\n  description: 'Auto-generated placeholder for ${id}',\n  creator: 'Akin S. Sokpah from Nimba County, Liberia'\n};\n`;
     await fs.writeFile(filePath, content, 'utf8');
     created++;
     if (created % 100 === 0) process.stdout.write('.');
   }
-
-  // update modules.json metadata
-  let meta = { generatedAt: new Date().toISOString(), total: total, enabled: {} };
+  let meta = { generatedAt: new Date().toISOString(), enabled: {} };
   if (await fs.pathExists(metaFile)) {
-    try { meta = await fs.readJson(metaFile); } catch(e){ meta = { generatedAt: new Date().toISOString(), enabled: {} }; }
+    try { meta = await fs.readJson(metaFile); } catch {}
   }
-  // ensure all created modules are present in meta.enabled (default false)
-  for (let i = start; i < start + total; i++) {
+  for(let i=start;i<start+total;i++){
     const id = `feat${pad(i)}`;
-    if (!meta.enabled) meta.enabled = {};
-    if (meta.enabled[id] === undefined) meta.enabled[id] = false;
+    if(!meta.enabled) meta.enabled = {};
+    if(meta.enabled[id] === undefined) meta.enabled[id] = false;
   }
-
   await fs.writeJson(metaFile, meta, { spaces: 2 });
-
-  console.log(`\nDone. Created ${created} new modules. Meta written to modules.json`);
+  console.log(`\nDone. Created ${created} new modules.`);
 })();
