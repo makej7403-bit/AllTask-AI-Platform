@@ -1,51 +1,38 @@
 'use client';
-import { useEffect,useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function DashboardPage(){
-  const [modules,setModules] = useState([]);
-  const [adminSecret,setAdminSecret] = useState('');
-  const [loading,setLoading] = useState(false);
+export default function Dashboard() {
+  const [modules, setModules] = useState([]);
 
-  async function load(){
-    setLoading(true);
+  useEffect(()=>{ fetchModules(); }, []);
+
+  async function fetchModules() {
     const res = await fetch('/api/modules/list');
     const j = await res.json();
     setModules(j.modules || []);
-    setLoading(false);
   }
-  useEffect(()=>{ load(); }, []);
 
-  async function toggle(id, enable){
-    if(!adminSecret) return alert('Enter admin secret');
-    const res = await fetch('/api/admin/toggle', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id, enable, adminSecret })});
+  async function toggle(id, enable) {
+    const res = await fetch('/api/admin/toggle', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id, enable, adminSecret: prompt('Admin secret (enter to toggle):') })});
     const j = await res.json();
     alert(JSON.stringify(j));
-    load();
+    fetchModules();
   }
 
   return (
     <div>
-      <div className="header-row">
-        <h2>Admin Dashboard</h2>
-        <div><input className="input" placeholder="Admin secret" value={adminSecret} onChange={e=>setAdminSecret(e.target.value)} style={{width:260}}/></div>
-      </div>
-
-      <div className="small">Toggle modules (enable = true mounts route). Use admin secret set in ENV.</div>
-      <div style={{height:12}} />
-      {loading ? <div>Loading...</div> :
-        <div className="grid">
-          {modules.map(m=>(
-            <div className="card" key={m.id}>
-              <h3>{m.name}</h3>
-              <div className="small">{m.description}</div>
-              <div style={{marginTop:12,display:'flex',gap:8}}>
-                <button className="btn" onClick={()=>toggle(m.id, !m.enabled)}>{m.enabled?'Disable':'Enable'}</button>
-                <a href={`/api/modules/load/${m.id}`} target="_blank" rel="noreferrer">Open</a>
-              </div>
+      <h2>Admin Dashboard</h2>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:10 }}>
+        {modules.map(m=>(
+          <div key={m.id} style={{ border:'1px solid #eee', padding:10, borderRadius:8 }}>
+            <h4>{m.name}</h4>
+            <div style={{ fontSize:13, color:'#555' }}>{m.description}</div>
+            <div style={{ marginTop:8 }}>
+              <button className="btn" onClick={()=>toggle(m.id, !m.enabled)}>{m.enabled ? 'Disable' : 'Enable'}</button>
             </div>
-          ))}
-        </div>
-      }
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
