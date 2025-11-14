@@ -1,16 +1,22 @@
-// app/api/modules/load/[id]/route.js
-import path from 'path';
-import fs from 'fs';
+import { NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
 
 export async function GET(req, { params }) {
+  const { id } = params;
+
   try {
-    const id = params.id;
-    const file = path.join(process.cwd(), 'modules', `${id}.js`);
-    if (!fs.existsSync(file)) return new Response(JSON.stringify({ error: 'Not found' }), { status: 404 });
-    const mod = require(file);
-    // return metadata only
-    return new Response(JSON.stringify({ id: mod.id || id, name: mod.name, description: mod.description, creator: mod.creator }), { status: 200 });
+    const modulePath = path.join(process.cwd(), "modules", `${id}.json`);
+
+    if (!fs.existsSync(modulePath)) {
+      return NextResponse.json({ error: "Module not found" }, { status: 404 });
+    }
+
+    const data = fs.readFileSync(modulePath, "utf8");
+    const json = JSON.parse(data);
+
+    return NextResponse.json(json);
   } catch (err) {
-    return new Response(JSON.stringify({ error: String(err) }), { status: 500 });
+    return NextResponse.json({ error: "Failed to load module" }, { status: 500 });
   }
 }
