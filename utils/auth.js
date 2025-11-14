@@ -1,12 +1,14 @@
 import jwt from "jsonwebtoken";
 
+const JWT_SECRET = process.env.JWT_SECRET || "change_jwt_secret";
+
 export function signToken(data) {
-  return jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign(data, JWT_SECRET, { expiresIn: "7d" });
 }
 
 export function verifyToken(token) {
   try {
-    return jwt.verify(token, process.env.JWT_SECRET);
+    return jwt.verify(token, JWT_SECRET);
   } catch (e) {
     return null;
   }
