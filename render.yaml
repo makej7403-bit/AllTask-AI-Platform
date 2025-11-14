@@ -3,7 +3,7 @@ services:
     name: FullTask-Global-AI-Platform
     env: node
     plan: free
-    region: oregon   # change to your preferred region
+    region: oregon
     branch: main
     repo: https://github.com/makej7403-bit/AllTask-AI-Platform
     buildCommand: npm install && npm run build
@@ -22,5 +22,7 @@ services:
         fromEnvironment: SUPABASE_ANON_KEY
       - key: SUPABASE_SERVICE_ROLE_KEY
         fromEnvironment: SUPABASE_SERVICE_ROLE_KEY
+      - key: FIREBASE_SERVICE_ACCOUNT
+        fromEnvironment: FIREBASE_SERVICE_ACCOUNT
       - key: NEXT_PUBLIC_API_URL
         fromEnvironment: NEXT_PUBLIC_API_URL
