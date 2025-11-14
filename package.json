@@ -5,37 +5,29 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "generate:modules": "node scripts/generate_modules.js"
+    "start": "next start -p $PORT",
+    "generate:modules": "node scripts/generate_modules.js 3000 1 500"
   },
   "dependencies": {
     "next": "15.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-
     "@supabase/supabase-js": "^2.45.0",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
-
     "jsonwebtoken": "^9.0.2",
     "bcryptjs": "^2.4.3",
-
     "openai": "^4.63.0",
-
     "stripe": "^16.5.0",
-
-    "cors": "^2.8.5",
-    "cookie": "^0.6.0",
-
-    "zod": "^3.23.8",
-    "uuid": "^9.0.1",
-    "dotenv": "^16.4.5",
-
     "fs-extra": "^11.1.1",
+    "firebase": "^10.12.0",
+    "firebase-admin": "^12.6.0",
+    "cookie": "^0.6.0",
+    "dotenv": "^16.4.5",
     "yaml": "^2.5.0"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
     "eslint-config-next": "^15.0.3",
     "prettier": "^3.1.0"
-  }
+  },
+  "engines": { "node": ">=18.x" }
 }
