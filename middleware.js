@@ -5,12 +5,16 @@ export function middleware(req) {
   const token = req.cookies.get("token")?.value;
   const url = req.nextUrl.pathname;
 
+  // Protect admin routes
   if (url.startsWith("/admin")) {
-    if (!token) return NextResponse.redirect(new URL("/login", req.url });
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
 
     const user = verifyToken(token);
-    if (!user || user.role !== "admin")
+    if (!user || user.role !== "admin") {
       return NextResponse.redirect(new URL("/login", req.url));
+    }
   }
 
   return NextResponse.next();
