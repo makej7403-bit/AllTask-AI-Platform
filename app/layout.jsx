@@ -1,29 +1,23 @@
-// app/layout.jsx
 import './globals.css';
 import Link from 'next/link';
 import { CREATOR } from '@/utils/identity';
-
-export const metadata = { title: 'FullTask Global AI', description: 'FullTask — AI Tutor' };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <div className="ft-shell">
-          <header className="ft-header">
-            <div className="ft-brand">
-              <Link href="/"><img src="/logo.png" alt="FullTask" className="ft-logo" /></Link>
-              <div><h1>FullTask Global AI</h1><div className="ft-sub">AI Tutor · Global Tools</div></div>
+        <div style={{ maxWidth: 1100, margin: '20px auto', padding: 16 }}>
+          <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h1>FullTask Global AI</h1>
+              <div style={{ fontSize: 13, color: '#666' }}>{CREATOR}</div>
             </div>
-            <nav className="ft-nav">
-              <Link href="/">Home</Link>
-              <Link href="/dashboard">Dashboard</Link>
-              <Link href="/chat">AI Chat</Link>
-              <Link href="/explorer">Explorer</Link>
+            <nav>
+              <Link href="/">Home</Link> | <Link href="/dashboard">Dashboard</Link> | <Link href="/chat">Chat</Link> | <Link href="/login">Login</Link>
             </nav>
           </header>
-          <main className="ft-main">{children}</main>
-          <footer className="ft-footer"><div>Creator: <strong>{CREATOR}</strong></div><div>© {new Date().getFullYear()} FullTask</div></footer>
+          <main style={{ marginTop: 18 }}>{children}</main>
+          <footer style={{ marginTop: 24, color: '#666' }}>© {new Date().getFullYear()} FullTask</footer>
         </div>
       </body>
     </html>
