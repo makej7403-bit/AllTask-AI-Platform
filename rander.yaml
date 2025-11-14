@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: FullTask-Global-AI-Platform
+    env: node
+    plan: free
+    region: oregon   # change to your preferred region
+    branch: main
+    repo: https://github.com/makej7403-bit/AllTask-AI-Platform
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: OPENAI_API_KEY
+        fromEnvironment: OPENAI_API_KEY
+      - key: ADMIN_SECRET
+        fromEnvironment: ADMIN_SECRET
+      - key: JWT_SECRET
+        fromEnvironment: JWT_SECRET
+      - key: SUPABASE_URL
+        fromEnvironment: SUPABASE_URL
+      - key: SUPABASE_ANON_KEY
+        fromEnvironment: SUPABASE_ANON_KEY
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        fromEnvironment: SUPABASE_SERVICE_ROLE_KEY
+      - key: NEXT_PUBLIC_API_URL
+        fromEnvironment: NEXT_PUBLIC_API_URL
