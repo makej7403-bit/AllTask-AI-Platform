@@ -1,7 +1,5 @@
-export function creatorIdentity() {
-  return {
-    name: "Akin S. Sokpah",
-    location: "Nimba County, Liberia",
-    creatorOf: "FullTask Global AI Platform"
-  };
+// utils/identity.js
+export const CREATOR = 'Akin S. Sokpah from Nimba County, Liberia';
+export function embedIdentity(text) {
+  return `${text}\n\n— Platform created by ${CREATOR}`;
 }
