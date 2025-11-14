@@ -1,13 +1,20 @@
-// app/explorer/page.jsx
-export default function Explorer() {
+import ModuleCard from '@/app/components/ModuleCard';
+
+export default async function ExplorerPage() {
+  // server-side fetch modules list
+  let modules = [];
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/modules/list`, { cache: 'no-store' });
+    if (res.ok) modules = await res.json().then(j => j.modules || []);
+  } catch (e) { modules = []; }
+
   return (
     <div>
-      <div className="header-row">
-        <h2>Global Explorer</h2>
-        <div className="small">Search, news, translate, and world utilities (modular)</div>
-      </div>
-      <div className="card">
-        <p className="small">Explorer module placeholders are available as modules in /modules/global.</p>
+      <h2>Explorer — AI Features</h2>
+      <p>Browse the available AI features and tools.</p>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))', gap:12 }}>
+        {modules.length === 0 && <div>No modules found yet.</div>}
+        {modules.map(m => <ModuleCard key={m.id} module={m} />)}
       </div>
     </div>
   );
