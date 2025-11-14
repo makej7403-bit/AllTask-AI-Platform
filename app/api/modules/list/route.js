@@ -4,23 +4,30 @@ import path from 'path';
 
 export async function GET() {
   try {
-    const modulesPath = path.join(process.cwd(), 'modules');
+    const modulesRoot = path.join(process.cwd(), 'modules');
     const metaPath = path.join(process.cwd(), 'modules.json');
-    if (!fs.existsSync(modulesPath)) return new Response(JSON.stringify({ modules: [], count: 0 }), { status: 200 });
 
-    const files = fs.readdirSync(modulesPath).filter(f => f.endsWith('.js'));
+    if (!fs.existsSync(modulesRoot)) return new Response(JSON.stringify({ modules: [], count: 0 }), { status: 200 });
+
+    const groups = fs.readdirSync(modulesRoot);
     const meta = fs.existsSync(metaPath) ? JSON.parse(fs.readFileSync(metaPath, 'utf8')) : { enabled: {} };
 
-    const modules = files.map(f => {
-      const id = f.replace('.js','');
-      let info = { id, name: id, description: '', enabled: !!meta.enabled[id] };
-      try {
-        const mod = require(path.join(process.cwd(), 'modules', f));
-        info.name = mod.name || info.name;
-        info.description = mod.description || info.description;
-      } catch (e) {}
-      return info;
-    });
+    const modules = [];
+
+    for (const g of groups) {
+      const gp = path.join(modulesRoot, g);
+      if (!fs.existsSync(gp) || !fs.statSync(gp).isDirectory()) continue;
+      const files = fs.readdirSync(gp).filter(f => f.endsWith('.js'));
+      for (const f of files) {
+        const id = f.replace('.js', '');
+        const content = fs.readFileSync(path.join(gp, f), 'utf8');
+        const nameMatch = content.match(/name:\s*['"`](.*?)['"`]/);
+        const descMatch = content.match(/description:\s*['"`](.*?)['"`]/);
+        const name = nameMatch ? nameMatch[1] : id;
+        const description = descMatch ? descMatch[1] : '';
+        modules.push({ id, name, description, enabled: !!meta.enabled[id], path: `/api/modules/load/${id}` });
+      }
+    }
 
     return new Response(JSON.stringify({ modules, count: modules.length }), { status: 200 });
   } catch (err) {
