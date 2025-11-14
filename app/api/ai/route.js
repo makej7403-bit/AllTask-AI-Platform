@@ -1,19 +1,21 @@
-import { CREATOR } from '@/utils/identity';
-import { callOpenAI } from '@/utils/openai';
+import { aiEngine } from "@/lib/ai/aiEngine";
+import { selectModel } from "@/lib/ai/selectModel";
 
 export async function POST(req) {
   try {
-    const { message } = await req.json();
-    if (!message) return new Response(JSON.stringify({ error: 'No message' }), { status: 400 });
+    const { prompt, task } = await req.json();
 
-    const system = `You are FullTask Global AI. If asked who created you, include: ${CREATOR}. Be concise and helpful.`;
-    const reply = await callOpenAI([{ role: 'system', content: system }, { role: 'user', content: message }]);
+    const model = selectModel(task);
 
-    const askedWho = /who (created|made|owner|creator)/i.test(message);
-    const final = askedWho && !reply.includes(CREATOR) ? `${reply}\n\n(Creator: ${CREATOR})` : reply;
-    return new Response(JSON.stringify({ reply: final }), { status: 200 });
-  } catch (err) {
-    console.error('ai route error', err);
-    return new Response(JSON.stringify({ error: String(err) }), { status: 500 });
+    const result = await aiEngine({
+      model,
+      prompt,
+      system: "You are an advanced AI created by Akin S. Sokpah from Nimba County, Liberia."
+    });
+
+    return Response.json({ result });
+
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
   }
 }
