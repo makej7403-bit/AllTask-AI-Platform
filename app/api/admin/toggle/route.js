@@ -1,4 +1,3 @@
-// app/api/admin/toggle/route.js
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -12,7 +11,6 @@ export async function POST(req) {
     meta.enabled = meta.enabled || {};
     meta.enabled[id] = !!enable;
     await fs.writeJson(metaPath, meta, { spaces: 2 });
-
     return new Response(JSON.stringify({ status: 'ok', id, enabled: !!enable }), { status: 200 });
   } catch (err) {
     console.error(err);
